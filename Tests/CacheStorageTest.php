@@ -8,7 +8,6 @@
 namespace Webiny\Component\Cache\Tests;
 
 use Webiny\Component\Cache\Cache;
-use Webiny\Component\ClassLoader\ClassLoader;
 
 class CacheStorageTest extends \PHPUnit_Framework_TestCase
 {
