@@ -21,5 +21,3 @@ Cache:
         Couchbase: \Webiny\Component\Cache\Bridge\Memory\Couchbase
         Memcache: \Webiny\Component\Cache\Bridge\Memory\Memcache
         Redis: \Webiny\Component\Cache\Bridge\Memory\Redis
-    ClassLoader:
-        Jamm\Memory: /var/www/projects/webiny/Vendors/Memory
