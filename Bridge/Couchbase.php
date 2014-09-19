@@ -66,7 +66,8 @@ class Couchbase extends CacheAbstract
         // check if Couchbase extension is loaded
         if (!class_exists('Couchbase', true)) {
             throw new CacheException('The "Couchbase" SDK must be installed if you wish to use Couchbase.
-										For more information visit: http://www.couchbase.com/develop/php/current');
+										For more information visit: http://www.couchbase.com/develop/php/current'
+            );
         } else {
             $couchbase = new \Couchbase($host, $user, $password, $bucket);
         }
@@ -79,9 +80,10 @@ class Couchbase extends CacheAbstract
 
         if (!self::isInstanceOf($instance, '\Webiny\Component\Cache\Bridge\CacheStorageInterface')) {
             throw new CacheException(CacheException::MSG_INVALID_ARG, [
-                'driver',
-                '\Webiny\Component\Cache\Bridge\CacheStorageInterface'
-            ]);
+                    'driver',
+                    '\Webiny\Component\Cache\Bridge\CacheStorageInterface'
+                ]
+            );
         }
 
         return $instance;

@@ -29,10 +29,10 @@ class CacheStorageTest extends \PHPUnit_Framework_TestCase
     public function testSave($cache)
     {
         $cache->save(self::CACHE_KEY, 'some value', 3600, [
-                                        'test',
-                                        'unit',
-                                        'tag'
-                                    ]
+                'test',
+                'unit',
+                'tag'
+            ]
         );
     }
 
