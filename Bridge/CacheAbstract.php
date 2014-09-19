@@ -36,9 +36,10 @@ abstract class CacheAbstract implements StorageInterface
 
         if (!self::isInstanceOf($instance, '\Webiny\Component\Cache\Bridge\CacheStorageInterface')) {
             throw new CacheException(CacheException::MSG_INVALID_ARG, [
-                'driver',
-                '\Webiny\Component\Cache\Bridge\CacheStorageInterface'
-            ]);
+                    'driver',
+                    '\Webiny\Component\Cache\Bridge\CacheStorageInterface'
+                ]
+            );
         }
 
         return $instance;
