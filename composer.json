@@ -21,7 +21,7 @@
 		"webiny/std-lib": "~1.0",
 		"webiny/config": "~1.0",
 		"webiny/service-manager": "~1.0",
-		"jamm/memory": "dev-master"
+		"webiny/forked-jamm-memory": "~1.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "4.1.*"
