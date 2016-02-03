@@ -10,13 +10,15 @@ namespace Webiny\Component\Cache\Storage;
 use \Webiny\Component\Cache\Bridge\CacheStorageInterface;
 
 /**
- * Null cache storage.
- * This storage is used when cache status is set to false.
+ * SessionArray cache storage.
+ * Holds cache in internal array.
  *
  * @package         Webiny\Component\Cache\Storage
  */
-class Null implements CacheStorageInterface
+class SessionArray implements CacheStorageInterface
 {
+    private $cache = [];
+    private $tags = [];
 
     /**
      * Save a value into memory only if it DOESN'T exists (or false will be returned).
@@ -30,6 +32,20 @@ class Null implements CacheStorageInterface
      */
     public function add($key, $value, $ttl = 600, $tags = null)
     {
+        $keyHash = md5($key);
+
+        if (!isset($this->cache[$keyHash])) {
+            $this->cache[$keyHash] = $value;
+
+            if (is_array($tags)) {
+                foreach ($tags as $t) {
+                    $this->tags[$t][] = $key;
+                }
+            }
+
+            return true;
+        }
+
         return false;
     }
 
@@ -45,7 +61,15 @@ class Null implements CacheStorageInterface
      */
     public function save($key, $value, $ttl = 600, $tags = null)
     {
-        return false;
+        $this->cache[md5($key)] = $value;
+
+        if (is_array($tags)) {
+            foreach ($tags as $t) {
+                $this->tags[$t][] = $key;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -58,6 +82,12 @@ class Null implements CacheStorageInterface
      */
     public function read($key, &$ttlLeft = -1)
     {
+        $key = md5($key);
+
+        if (isset($this->cache[$key])) {
+            return $this->cache[$key];
+        }
+
         return false;
     }
 
@@ -70,7 +100,15 @@ class Null implements CacheStorageInterface
      */
     public function delete($key)
     {
-        return true;
+        $key = md5($key);
+
+        if (isset($this->cache[$key])) {
+            unset($this->cache[$key]);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -92,6 +130,14 @@ class Null implements CacheStorageInterface
      */
     public function deleteByTags($tag)
     {
+        if (!isset($this->tags[$tag])) {
+            return false;
+        }
+
+        foreach ($this->tags[$tag] as $key) {
+            $this->delete($key);
+        }
+
         return true;
     }
 

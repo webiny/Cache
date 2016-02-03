@@ -5,103 +5,18 @@
  * @copyright Copyright Webiny LTD
  */
 
-namespace Webiny\Component\Cache;
+namespace Webiny\Component\Cache\Storage;
 
-use Webiny\Component\Cache\Bridge\CacheStorageInterface;
-use Webiny\Component\Cache\Storage\BlackHole;
+use \Webiny\Component\Cache\Bridge\CacheStorageInterface;
 
 /**
- * CacheStorage is the main instance for working with cache drivers.
- * The best way to create a CacheStorage instance is over the Cache class.
+ * BlackHole cache storage.
+ * This storage is used when cache status is set to false.
  *
- * @package         Webiny\Component\Cache
+ * @package         Webiny\Component\Cache\Storage
  */
-class CacheStorage
+class BlackHole implements CacheStorageInterface
 {
-    /**
-     * @var null|BlackHole
-     */
-    private static $nullDriver = null;
-
-    /**
-     * @var \Webiny\Component\Cache\Bridge\CacheStorageInterface
-     */
-    private $driver;
-
-    /**
-     * @var array
-     */
-    private $options = [
-        'status' => true,
-        'ttl'    => 86400
-    ];
-
-
-    /**
-     * Create a cache driver instance.
-     *
-     * @param CacheStorageInterface $driver  Instance of CacheInterface.
-     * @param array                 $options Array of options.
-     */
-    public function __construct(CacheStorageInterface $driver, array $options = [])
-    {
-        $this->driver = $driver;
-
-        foreach ($options as $k => $v) {
-            if (isset($this->options[$k])) {
-                $this->options[$k] = $v;
-            }
-        }
-    }
-
-    /**
-     * Get driver instance.
-     *
-     * @return CacheStorageInterface
-     */
-    public function getDriver()
-    {
-        // if driver status is false, we return the BlackHole driver
-        if (!$this->getStatus()) {
-            if (is_null(self::$nullDriver)) {
-                self::$nullDriver = new Storage\BlackHole();
-            }
-
-            return self::$nullDriver;
-        }
-
-        return $this->driver;
-    }
-
-    /**
-     * Get cache status.
-     *
-     * @return mixed
-     */
-    public function getStatus()
-    {
-        return $this->options['status'];
-    }
-
-    /**
-     * Change the cache status.
-     *
-     * @param bool $status Turn caching on or off.
-     */
-    public function setStatus($status)
-    {
-        $this->options['status'] = (bool)$status;
-    }
-
-    /**
-     * Returns the ttl from options.
-     *
-     * @return int
-     */
-    public function getTtl()
-    {
-        return $this->options['ttl'];
-    }
 
     /**
      * Save a value into memory only if it DOESN'T exists (or false will be returned).
@@ -113,9 +28,9 @@ class CacheStorage
      *
      * @return boolean True if value was added, otherwise false.
      */
-    public function add($key, $value, $ttl = null, $tags = null)
+    public function add($key, $value, $ttl = 600, $tags = null)
     {
-        return $this->getDriver()->add($key, $value, (is_null($ttl) ? $this->getTtl() : $ttl), $tags);
+        return false;
     }
 
     /**
@@ -128,9 +43,9 @@ class CacheStorage
      *
      * @return bool True if value was stored successfully, otherwise false.
      */
-    public function save($key, $value, $ttl = null, $tags = null)
+    public function save($key, $value, $ttl = 600, $tags = null)
     {
-        return $this->getDriver()->save($key, $value, (is_null($ttl) ? $this->getTtl() : $ttl), $tags);
+        return false;
     }
 
     /**
@@ -143,7 +58,7 @@ class CacheStorage
      */
     public function read($key, &$ttlLeft = -1)
     {
-        return $this->getDriver()->read($key, $ttlLeft);
+        return false;
     }
 
     /**
@@ -155,7 +70,7 @@ class CacheStorage
      */
     public function delete($key)
     {
-        return $this->getDriver()->delete($key);
+        return true;
     }
 
     /**
@@ -165,7 +80,7 @@ class CacheStorage
      */
     public function deleteOld()
     {
-        return $this->getDriver()->deleteOld();
+        return true;
     }
 
     /**
@@ -177,7 +92,7 @@ class CacheStorage
      */
     public function deleteByTags($tag)
     {
-        return $this->getDriver()->deleteByTags($tag);
+        return true;
     }
 
     /**
@@ -191,7 +106,7 @@ class CacheStorage
      */
     public function selectByCallback($callback, $getArray = false)
     {
-        return $this->getDriver()->selectByCallback($callback, $getArray);
+        return false;
     }
 
     /**
@@ -209,7 +124,7 @@ class CacheStorage
      */
     public function increment($key, $byValue = 1, $limitKeysCount = 0, $ttl = 259200)
     {
-        return $this->getDriver()->increment($key, $byValue, $limitKeysCount, $ttl);
+        return true;
     }
 
     /**
@@ -223,7 +138,7 @@ class CacheStorage
      */
     public function lockKey($key, &$autoUnlockerVariable)
     {
-        return $this->getDriver()->lockKey($key, $autoUnlockerVariable);
+        return true;
     }
 
     /**
@@ -237,6 +152,6 @@ class CacheStorage
      */
     public function acquireKey($key, &$autoUnlocker)
     {
-        return $this->getDriver()->acquireKey($key, $autoUnlocker);
+        return false;
     }
 }
